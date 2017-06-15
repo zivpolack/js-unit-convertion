@@ -1,0 +1,22 @@
+{
+  "name": "js-unit-converter",
+  "version": "0.0.1",
+  "description": "Javascript library for unit convertion",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zivpolack/js-unit-convertion.git"
+  },
+  "author": "Ziv Polack",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zivpolack/js-unit-convertion/issues"
+  },
+  "homepage": "https://github.com/zivpolack/js-unit-convertion#readme",
+  "dependencies": {
+    "webpack": "^2.6.1"
+  }
+}
