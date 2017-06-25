@@ -2,6 +2,7 @@
  * Created by Ziv on 15/06/2017.
  */
 import {UNIT_TABLE, UNITS} from './unit-table';
+import {UnitObject} from './unit-object.model';
 
 export class unitConverter {
 
@@ -9,61 +10,71 @@ export class unitConverter {
     private currentUnit: string;
     private targetUnit: string;
 
-    constructor(value: number){
+    constructor(value: number) {
         this.value = value;
     }
 
-    public in(currentUnit : string){
-        if (this.isValidUnit(currentUnit)){
+    public in(currentUnit: string) {
+        if (this.isValidUnit(currentUnit)) {
             this.currentUnit = currentUnit;
             return this;
         } else this.handleInvalidUnit(currentUnit);
     }
 
-    public to(targetUnit : string){
+    public to(targetUnit: string) {
         if (!this.currentUnit)
             this.handleBadCurrentUnit();
-        else if (this.isValidUnit(targetUnit)){
+        else if (this.isValidUnit(targetUnit)) {
             this.targetUnit = targetUnit;
             return this.calculateConvertion();
         } else this.handleInvalidUnit(targetUnit);
     }
 
-    private calculateConvertion(){
+    private calculateConvertion() {
         var currentUnitObject = this.getUnitObject(this.currentUnit);
         var targetUnitObject = this.getUnitObject(this.targetUnit);
-        if (this.checkUnitCompatibility(currentUnitObject,targetUnitObject)){
-            return this.value * (currentUnitObject.ratio / targetUnitObject.ratio);
+        if (this.checkUnitCompatibility(currentUnitObject, targetUnitObject)) {
+            //todo complex calculation
+            return this.value * (currentUnitObject.unit.ratio / targetUnitObject.unit.ratio);
         } else this.handleIncompatibleUnits(currentUnitObject, targetUnitObject);
     }
 
-    private getUnitObject(unitString : string){
-        for (var category in UNIT_TABLE){
-            for (var unit in UNIT_TABLE[category]){
+    private getUnitObject(unitString: string): UnitObject {
+        for (var category in UNIT_TABLE) {
+            for (var unit in UNIT_TABLE[category]) {
                 if (unit === unitString)
-                    return UNIT_TABLE[category][unit];
+                    return {
+                        unit: UNIT_TABLE[category][unit],
+                        baseUnit: UNIT_TABLE[category].baseUnit
+                    };
             }
         }
     }
 
-    private checkUnitCompatibility(currentUnit : any, targetUnit: any){
+    private checkUnitCompatibility(currentUnit: any, targetUnit: any) {
         return (currentUnit.baseUnit === targetUnit.baseUnit);
     }
 
-    private isValidUnit(unit : string){
-        return (!!UNITS[unit]);
+    private isValidUnit(unitString: string){
+        for (var category in UNITS){
+            for (var unit in UNITS[category]){
+                if (unit === unitString)
+                    return true;
+            }
+        }
+        return false;
     }
 
-    private handleBadCurrentUnit(){
-        throw new Error (`Current unit should be specified before target unit using to(<currentUnit>)`);
+    private handleBadCurrentUnit() {
+        throw new Error(`Current unit should be specified before target unit using to(<currentUnit>)`);
     }
 
-    private handleInvalidUnit(unit : string){
-        throw new Error (`Unit type ${unit} is not valid.`)
+    private handleInvalidUnit(unit: string) {
+        throw new Error(`Unit type ${unit} is not supported.`)
     }
 
-    private handleIncompatibleUnits(currentUnitObject: any, targetUnitObject: any){
-        throw new Error (`Unit ${this.currentUnit} (baseUnit:${currentUnitObject.baseUnit}) 
+    private handleIncompatibleUnits(currentUnitObject: any, targetUnitObject: any) {
+        throw new Error(`Unit ${this.currentUnit} (baseUnit:${currentUnitObject.baseUnit}) 
         is incompatible with unit ${this.targetUnit} (baseUnit:${targetUnitObject.baseUnit})`)
     }
 }

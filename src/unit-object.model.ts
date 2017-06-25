@@ -1,4 +1,4 @@
-export abstract class BaseUnit {
+export abstract class UnitObject {
     unit: any;
     baseUnit: string;
 }
